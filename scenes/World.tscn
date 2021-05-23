@@ -20,6 +20,7 @@ directional_shadow_max_distance = 20.0
 
 [node name="Map" parent="." instance=ExtResource( 2 )]
 script = ExtResource( 1 )
+hero_path = NodePath("../Hero")
 
 [node name="CameraRig" type="Spatial" parent="."]
 script = ExtResource( 5 )

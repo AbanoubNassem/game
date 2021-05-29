@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scripts/Map.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/Map.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scripts/Hero.gd" type="Script" id=3]
 [ext_resource path="res://scenes/Hero.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scripts/MainCamera.gd" type="Script" id=5]
+[ext_resource path="res://scripts/CameraRig.gd" type="Script" id=5]
 
 [node name="World" type="Spatial"]
 
@@ -19,12 +18,16 @@ directional_shadow_depth_range = 1
 directional_shadow_max_distance = 20.0
 
 [node name="Map" parent="." instance=ExtResource( 2 )]
-script = ExtResource( 1 )
+hero_path = NodePath("../Hero")
 
-[node name="CameraRig" type="Position3D" parent="."]
+[node name="CameraRig" type="Spatial" parent="."]
+script = ExtResource( 5 )
+remote_path = NodePath("../Hero")
+margin = Vector2( 100, 100 )
 
 [node name="Camera" type="Camera" parent="CameraRig"]
-transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 5 )
-script = ExtResource( 5 )
+transform = Transform( 0.707107, -0.408244, 0.577353, 0, 0.8165, 0.577344, -0.707107, -0.408244, 0.577353, 5, 5, 5 )
+projection = 1
+size = 5.0
 
 [connection signal="input_event" from="Map" to="Map" method="_on_Map_input_event"]

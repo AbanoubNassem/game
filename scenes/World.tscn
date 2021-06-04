@@ -1,9 +1,21 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scenes/maps/Map.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scripts/Hero.gd" type="Script" id=3]
 [ext_resource path="res://scenes/Hero.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scripts/CameraRig.gd" type="Script" id=5]
+
+[sub_resource type="CubeMesh" id=1]
+
+[sub_resource type="BoxShape" id=2]
+
+[sub_resource type="CylinderMesh" id=3]
+top_radius = 0.5
+bottom_radius = 0.5
+height = 0.1
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0, 0.45098, 0.0823529, 1 )
 
 [node name="World" type="Spatial"]
 
@@ -18,7 +30,17 @@ directional_shadow_depth_range = 1
 directional_shadow_max_distance = 20.0
 
 [node name="Map" parent="." instance=ExtResource( 2 )]
-hero_path = NodePath("../Hero")
+script = null
+
+[node name="StaticBody" type="StaticBody" parent="Map"]
+transform = Transform( 1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 1.01711, -4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Map/StaticBody"]
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="Map/StaticBody"]
+shape = SubResource( 2 )
 
 [node name="CameraRig" type="Spatial" parent="."]
 script = ExtResource( 5 )
@@ -26,8 +48,15 @@ remote_path = NodePath("../Hero")
 margin = Vector2( 100, 100 )
 
 [node name="Camera" type="Camera" parent="CameraRig"]
-transform = Transform( 0.707107, -0.408244, 0.577353, 0, 0.8165, 0.577344, -0.707107, -0.408244, 0.577353, 5, 5, 5 )
+transform = Transform( 1, 0, 0, 0, 0.819151, 0.573576, 0, -0.573576, 0.819152, 0, 5, 7 )
 projection = 1
-size = 5.0
+size = 9.0
 
-[connection signal="input_event" from="Map" to="Map" method="_on_Map_input_event"]
+[node name="TargetIndicator" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0 )
+
+[node name="Mesh" type="MeshInstance" parent="TargetIndicator"]
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[editable path="Map"]

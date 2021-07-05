@@ -9,29 +9,33 @@ onready var target_indicator:Position3D = get_node("/root/World/TargetIndicator"
 
 var target = transform.origin
 var velocity = Vector3.ZERO
-var jump_time = 1.933330 # animation time
+var jump_time = 0.866667 # animation time
 
 func _physics_process(delta):
 	velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector3.UP)
-	var jump_height = (-0.5 * jump_time * gravity) * 0.5 * jump_time + 0.125 * gravity * jump_time * jump_time
+
 	
 	if is_on_floor():
 		var h_distance = Vector2(transform.origin.x, transform.origin.z).distance_to(Vector2(target.x, target.z))
-		var h_speed = speed
-		var v_velocity = 0
+		var v_distance = target.y - transform.origin.y
+		var h_velocity = speed
+		var v_velocity = 0.0
+		
 		if Input.is_action_pressed("Jump") and h_distance > 0.5 and h_distance < 18.0:
-			h_speed = h_distance / jump_time
-			gravity = -8 * jump_height / (jump_time * jump_time)
-			v_velocity = -0.5 * jump_time * gravity
-		if h_distance < 0.05:
+			var jump_height = (-0.5 * jump_time * gravity) * 0.5 * jump_time + 0.125 * gravity * jump_time * jump_time
+			var height = max(v_distance, 0) + jump_height
+			gravity = (4 * v_distance - 8 * height) / (jump_time * jump_time)
+			h_velocity = h_distance / jump_time
+			v_velocity = (4 * height - v_distance) / jump_time
+		if h_distance < 0.5:
 			# perhaps you want to flip this line, maybe just set x and z
 			target = transform.origin
 			velocity = Vector3(0, v_velocity, 0)
 		else:
 			look_at(target, Vector3.UP)
 			rotation.x = 0
-			var vel = -transform.basis.z * h_speed
+			var vel = -transform.basis.z * h_velocity
 			velocity = Vector3(vel.x, v_velocity, vel.z)
 
 
